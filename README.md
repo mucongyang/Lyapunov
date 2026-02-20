@@ -35,6 +35,14 @@ python create_dataset.py
 ```
 - The script will create 3 important files ending with .train, .cleaned.valid and .cleaned.test.
 
+
+**External dataset compatibility (important)**
+- Training data files are parsed line by line with the format `sample_id|<x_prefix_tokens>	<y_prefix_tokens>`.
+- The code ignores `sample_id` (left of `|`) but strictly requires **two tab-separated fields** after `|`: source `x` and target `y`.
+- Equation separators must be the token `<SPECIAL_3>` (internal function separator). If your source uses `SEP`, replace it with `<SPECIAL_3>` before training.
+- Numeric scientific notation tokens such as `FLOAT+`, `FLOAT-`, `INT+`, `INT-`, `10^` are supported by the parser; however, every token must exist in the environment vocabulary and be in valid prefix order.
+- If a line contains only one side (only `x` without `y`) or uses out-of-vocabulary tokens, it will be filtered out or fail during token-to-id conversion.
+
 **Train**
 - We provide a json file and the `train.py` file to launch training. On the `reload_data` string, please provide task name (always ode_lyapunov), training dataset, evaluation dataset and different benchmarks (for example `"ode_lyapunov,/path/to/your/dataset.train,/path/to/your/dataset.valid.final,benchmarks/BPoly,benchmarks/FBarr,benchmarks/FLyap,benchmarks/FSOSTOOL"`).
 
